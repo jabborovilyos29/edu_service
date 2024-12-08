@@ -24,9 +24,14 @@ export class BooksController {
     return this.booksService.getBookById(Number(id));
   }
 
-  @Get(':authorId')
+  @Get('/author/:authorId')
   getBookByAuthorId(@Param('authorId') authorId: string): Book[] {
     return this.booksService.getBooksByAuthorId(Number(authorId));
+  }
+
+  @Get('/category/:categoryId')
+  getBookByCategory(@Param('categoryId') categoryId: string): Book[] {
+    return this.booksService.getBooksByCategory(Number(categoryId));
   }
 
   @Put(':id')

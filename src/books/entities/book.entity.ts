@@ -3,4 +3,5 @@ export class Book {
   name: string;
   publicationDate: string;
   authorId: number;
+  categoryIds: number[];
 }

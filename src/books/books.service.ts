@@ -44,4 +44,12 @@ export class BooksService {
 
     return res[0];
   }
+
+  getBooksByCategory(id: number): Book[] {
+    const res = this.datasourceService.getBooks().filter((book) => {
+      return book.categoryIds.includes(id);
+    });
+
+    return res;
+  }
 }
