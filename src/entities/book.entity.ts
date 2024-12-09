@@ -5,8 +5,8 @@ import {
   ManyToMany,
   JoinTable,
 } from 'typeorm';
-import { Author } from 'src/shared/entities/author.entity';
-import { Category } from 'src/shared/entities/categories.entity';
+import { Author } from 'src/entities/author.entity';
+import { Category } from 'src/entities/categories.entity';
 
 @Entity('books')
 export class Book {
@@ -19,7 +19,7 @@ export class Book {
   @Column()
   publicationDate: Date;
 
-  @ManyToMany(() => Author, (author) => author.books)
+  @ManyToMany(() => Author, (author) => author.affiliations)
   authors: Author[];
 
   @ManyToMany(() => Category, (category) => category.books)

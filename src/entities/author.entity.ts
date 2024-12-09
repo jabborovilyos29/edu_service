@@ -5,7 +5,7 @@ import {
   ManyToMany,
   JoinTable,
 } from 'typeorm';
-import { Book } from 'src/shared/entities/book.entity';
+import { Book } from 'src/entities/book.entity';
 
 @Entity('authors')
 export class Author {
@@ -27,5 +27,6 @@ export class Author {
     joinColumn: { name: 'author_id', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'book_id', referencedColumnName: 'id' },
   })
-  books: Book[];
+  @Column()
+  affiliations: number[];
 }

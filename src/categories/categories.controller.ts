@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { CategoriesService } from './categories.service';
-import { Category } from '../shared/entities/categories.entity';
+import { Category } from '../entities/categories.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
 
 @ApiTags('Categories')

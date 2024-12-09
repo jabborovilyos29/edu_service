@@ -10,7 +10,7 @@ import {
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { AuthorsService } from './authors.service';
 import { CreateAuthorDto } from './dto/create-author.dto';
-import { Author } from '../shared/entities/author.entity';
+import { Author } from '../entities/author.entity';
 
 @ApiTags('Authors')
 @Controller('authors')

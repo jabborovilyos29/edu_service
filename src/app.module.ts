@@ -4,6 +4,9 @@ import { DatasourceModule } from './datasource/datasource.module';
 import { BooksModule } from './books/books.module';
 import { CategoriesModule } from './categories/categories.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Author } from './entities/author.entity';
+import { Book } from './entities/book.entity';
+import { Category } from './entities/categories.entity';
 
 @Module({
   imports: [
@@ -18,9 +21,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       username: 'edu',
       password: 'password',
       database: 'edu',
-      synchronize: false,
+      synchronize: true,
       logging: true,
-      entities: ['dist/**/*.entity{.ts,.js}'],
+      migrations: ['migrations/*{.ts,.js}'],
+      entities: [Author, Book, Category],
+      migrationsRun: true,
     }),
   ],
   controllers: [],
