@@ -23,5 +23,5 @@ export class CreateAuthorDto {
     description: 'Идентификаторы связанных книг',
   })
   @IsArray()
-  books: Book[];
+  books: number[];
 }

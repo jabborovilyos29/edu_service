@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Book } from '../entities/book.entity';
 import { CreateBookDto } from './dto/create-book.dto';
 import { Author } from 'src/entities/author.entity';
@@ -9,6 +9,8 @@ import { Category } from 'src/entities/categories.entity';
 @Injectable()
 export class BooksService {
   constructor(
+    @InjectRepository(Author)
+    private readonly authorRepository: Repository<Author>,
     @InjectRepository(Book)
     private readonly bookRepository: Repository<Book>,
   ) {}
@@ -39,9 +41,26 @@ export class BooksService {
     });
   }
 
-  async updateBook(id: number, updateBook: Book): Promise<Book> {
-    await this.bookRepository.update(id, updateBook);
-    return this.getBookById(id);
+  async updateBook(id: number, updateBook: Partial<Book>): Promise<Book> {
+    const { authors: authorIds, ...bookData } = updateBook;
+
+    const book = await this.bookRepository.findOne({
+      where: { id },
+      relations: ['authors'],
+    });
+
+    if (!book) {
+      throw new Error(`Book with ID ${id} not found`);
+    }
+
+    Object.assign(book, bookData);
+
+    if (authorIds) {
+      const authors = await this.authorRepository.findBy({ id: In(authorIds) });
+      book.authors = authors;
+    }
+
+    return this.bookRepository.save(book);
   }
 
   async deleteBook(id: number): Promise<void> {

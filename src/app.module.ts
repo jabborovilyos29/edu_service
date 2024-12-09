@@ -23,7 +23,7 @@ import { Category } from './entities/categories.entity';
       database: 'edu',
       synchronize: true,
       logging: true,
-      migrations: ['migrations/*{.ts,.js}'],
+      migrations: ['src/migrations/*{.ts,.js}'],
       entities: [Author, Book, Category],
       migrationsRun: true,
     }),

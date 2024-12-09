@@ -55,7 +55,7 @@ export class BooksController {
   @Put(':id')
   async updateBook(
     @Param('id') id: string,
-    @Body() updateBook: Book,
+    @Body() updateBook: Partial<Book>,
   ): Promise<Book> {
     return this.booksService.updateBook(Number(id), updateBook);
   }
