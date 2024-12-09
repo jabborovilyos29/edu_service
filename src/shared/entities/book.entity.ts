@@ -5,8 +5,8 @@ import {
   ManyToMany,
   JoinTable,
 } from 'typeorm';
-import { Author } from 'src/authors/entities/author.entity';
-import { Category } from 'src/categories/entities/categories.entity';
+import { Author } from 'src/shared/entities/author.entity';
+import { Category } from 'src/shared/entities/categories.entity';
 
 @Entity('books')
 export class Book {

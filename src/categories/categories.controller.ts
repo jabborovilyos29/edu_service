@@ -9,7 +9,8 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { CategoriesService } from './categories.service';
-import { Category } from './entities/categories.entity';
+import { Category } from '../shared/entities/categories.entity';
+import { CreateCategoryDto } from './dto/create-category.dto';
 
 @ApiTags('Categories')
 @Controller('categories')
@@ -30,8 +31,10 @@ export class CategoriesController {
 
   @ApiOperation({ summary: 'Создание категории' })
   @Post()
-  async createCategory(@Body() category: Category): Promise<Category> {
-    return this.categoriesService.createCategory(category);
+  async createCategory(
+    @Body() createCategoryDto: CreateCategoryDto,
+  ): Promise<Category> {
+    return this.categoriesService.createCategory(createCategoryDto);
   }
 
   @ApiOperation({ summary: 'Обновление категории' })

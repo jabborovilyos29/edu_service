@@ -8,14 +8,14 @@ import {
   Delete,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
-import { AuthrosService } from './authros.service';
+import { AuthorsService } from './authors.service';
 import { CreateAuthorDto } from './dto/create-author.dto';
-import { Author } from './entities/author.entity';
+import { Author } from '../shared/entities/author.entity';
 
 @ApiTags('Authors')
 @Controller('authors')
 export class AuthorsController {
-  constructor(private readonly authorsService: AuthrosService) {}
+  constructor(private readonly authorsService: AuthorsService) {}
 
   @ApiOperation({ summary: 'Получение всех авторов' })
   @Get()

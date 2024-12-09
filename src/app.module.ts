@@ -20,8 +20,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       database: 'edu',
       synchronize: false,
       logging: true,
-      migrations: ['dist/migrations/*.js'],
-      migrationsRun: true,
       entities: ['dist/**/*.entity{.ts,.js}'],
     }),
   ],

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Author } from 'src/authors/entities/author.entity';
-import { Book } from 'src/books/entities/book.entity';
-import { Category } from 'src/categories/entities/categories.entity';
+import { Author } from 'src/shared/entities/author.entity';
+import { Book } from 'src/shared/entities/book.entity';
+import { Category } from 'src/shared/entities/categories.entity';
 
 @Injectable()
 export class DatasourceService {

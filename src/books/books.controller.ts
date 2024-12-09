@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { BooksService } from './books.service';
-import { Book } from './entities/book.entity';
+import { Book } from '../shared/entities/book.entity';
 import { CreateBookDto } from './dto/create-book.dto';
 
 @ApiTags('Books')
