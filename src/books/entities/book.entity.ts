@@ -1,7 +1,32 @@
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
+import { Author } from 'src/authors/entities/author.entity';
+import { Category } from 'src/categories/entities/categories.entity';
+
+@Entity('books')
 export class Book {
+  @PrimaryGeneratedColumn()
   id: number;
-  name: string;
-  publicationDate: string;
-  authorId: number;
-  categoryIds: number[];
+
+  @Column()
+  title: string;
+
+  @Column()
+  publicationDate: Date;
+
+  @ManyToMany(() => Author, (author) => author.books)
+  authors: Author[];
+
+  @ManyToMany(() => Category, (category) => category.books)
+  @JoinTable({
+    name: 'book_categories',
+    joinColumn: { name: 'book_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'category_id', referencedColumnName: 'id' },
+  })
+  categories: Category[];
 }

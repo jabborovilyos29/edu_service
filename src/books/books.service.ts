@@ -1,55 +1,68 @@
 import { Injectable } from '@nestjs/common';
-import { DatasourceService } from 'src/datasource/datasource.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { Book } from './entities/book.entity';
+import { CreateBookDto } from './dto/create-book.dto';
+import { Author } from 'src/authors/entities/author.entity';
+import { Category } from 'src/categories/entities/categories.entity';
 
 @Injectable()
 export class BooksService {
-  constructor(private readonly datasourceService: DatasourceService) {}
+  constructor(
+    @InjectRepository(Book)
+    private readonly bookRepository: Repository<Book>,
+  ) {}
 
-  createBook(book: Book): Book {
-    this.datasourceService.getBooks().push(book);
-    return book;
-  }
+  async createBook(createBookDto: CreateBookDto): Promise<Book> {
+    const { title, publicationDate, authors, categories } = createBookDto;
 
-  getBookById(id: number): Book | undefined {
-    return this.datasourceService.getBooks().find((book) => book.id === id);
-  }
-
-  getBooks(): Book[] {
-    return this.datasourceService.getBooks();
-  }
-
-  getBooksByAuthorId(id: number): Book[] {
-    return this.datasourceService
-      .getBooks()
-      .filter((book) => book.authorId === id);
-  }
-
-  updateBook(id: number, updateBook: Book): Book {
-    const index = this.datasourceService
-      .getBooks()
-      .findIndex((book) => book.id === id);
-
-    this.datasourceService.getBooks()[index] = updateBook;
-
-    return this.datasourceService.getBooks()[index];
-  }
-
-  deleteBook(id: number): Book {
-    const index = this.datasourceService
-      .getBooks()
-      .findIndex((book) => book.id === id);
-
-    const res = this.datasourceService.getBooks().splice(index, 1);
-
-    return res[0];
-  }
-
-  getBooksByCategory(id: number): Book[] {
-    const res = this.datasourceService.getBooks().filter((book) => {
-      return book.categoryIds.includes(id);
+    const book = this.bookRepository.create({
+      title,
+      publicationDate: new Date(publicationDate),
+      authors: authors.map((id) => ({ id }) as Author),
+      categories: categories.map((id) => ({ id }) as Category),
     });
 
-    return res;
+    return this.bookRepository.save(book);
+  }
+
+  async getBooks(): Promise<Book[]> {
+    return this.bookRepository.find({
+      relations: ['authors', 'categories'],
+    });
+  }
+
+  async getBookById(id: number): Promise<Book> {
+    return this.bookRepository.findOne({
+      where: { id },
+      relations: ['authors', 'categories'],
+    });
+  }
+
+  async updateBook(id: number, updateBook: Book): Promise<Book> {
+    await this.bookRepository.update(id, updateBook);
+    return this.getBookById(id);
+  }
+
+  async deleteBook(id: number): Promise<void> {
+    await this.bookRepository.delete(id);
+  }
+
+  async getBooksByAuthorId(authorId: number): Promise<Book[]> {
+    return this.bookRepository.find({
+      where: {
+        authors: { id: authorId },
+      },
+      relations: ['authors', 'categories'],
+    });
+  }
+
+  async getBooksByCategory(categoryId: number): Promise<Book[]> {
+    return this.bookRepository.find({
+      where: {
+        categories: { id: categoryId },
+      },
+      relations: ['authors', 'categories'],
+    });
   }
 }

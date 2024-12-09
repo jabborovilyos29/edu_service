@@ -1,51 +1,68 @@
 import {
   Controller,
-  Post,
   Get,
+  Post,
   Param,
-  Put,
   Body,
+  Put,
   Delete,
 } from '@nestjs/common';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { BooksService } from './books.service';
 import { Book } from './entities/book.entity';
+import { CreateBookDto } from './dto/create-book.dto';
 
+@ApiTags('Books')
 @Controller('books')
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
+  @ApiOperation({ summary: 'Получение всех книг' })
   @Get()
-  getBooks(): Book[] {
+  async getBooks(): Promise<Book[]> {
     return this.booksService.getBooks();
   }
 
+  @ApiOperation({ summary: 'Получение книги по ID' })
   @Get(':id')
-  getBookById(@Param('id') id: string): Book {
+  async getBookById(@Param('id') id: string): Promise<Book> {
     return this.booksService.getBookById(Number(id));
   }
 
+  @ApiOperation({ summary: 'Получение книг по ID автора' })
   @Get('/author/:authorId')
-  getBookByAuthorId(@Param('authorId') authorId: string): Book[] {
+  async getBooksByAuthorId(
+    @Param('authorId') authorId: string,
+  ): Promise<Book[]> {
     return this.booksService.getBooksByAuthorId(Number(authorId));
   }
 
+  @ApiOperation({ summary: 'Получение книг по ID категории' })
   @Get('/category/:categoryId')
-  getBookByCategory(@Param('categoryId') categoryId: string): Book[] {
+  async getBooksByCategory(
+    @Param('categoryId') categoryId: string,
+  ): Promise<Book[]> {
     return this.booksService.getBooksByCategory(Number(categoryId));
   }
 
-  @Put(':id')
-  updateBook(@Param('id') id: string, @Body() updateBook: Book): Book {
-    return this.booksService.updateBook(Number(id), updateBook);
-  }
-
+  @ApiOperation({ summary: 'Создание книги' })
   @Post()
-  createBook(@Body() book: Book): Book {
+  async createBook(@Body() book: CreateBookDto): Promise<Book> {
     return this.booksService.createBook(book);
   }
 
+  @ApiOperation({ summary: 'Обновление книги' })
+  @Put(':id')
+  async updateBook(
+    @Param('id') id: string,
+    @Body() updateBook: Book,
+  ): Promise<Book> {
+    return this.booksService.updateBook(Number(id), updateBook);
+  }
+
+  @ApiOperation({ summary: 'Удаление книги' })
   @Delete(':id')
-  deleteBook(@Param('id') id: string): Book {
+  async deleteBook(@Param('id') id: string): Promise<void> {
     return this.booksService.deleteBook(Number(id));
   }
 }

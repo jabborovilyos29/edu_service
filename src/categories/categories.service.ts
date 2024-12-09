@@ -1,43 +1,45 @@
 import { Injectable } from '@nestjs/common';
-import { DatasourceService } from 'src/datasource/datasource.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { Category } from './entities/categories.entity';
+import { CreateCategoryDto } from './dto/create-category.dto';
 
 @Injectable()
 export class CategoriesService {
-  constructor(private readonly datasourceService: DatasourceService) {}
+  constructor(
+    @InjectRepository(Category)
+    private readonly categoryRepository: Repository<Category>,
+  ) {}
 
-  createCategory(category: Category): Category {
-    this.datasourceService.getCategories().push(category);
-    return category;
+  async createCategory(
+    createCategoryDto: CreateCategoryDto,
+  ): Promise<Category> {
+    const category = this.categoryRepository.create(createCategoryDto);
+    return this.categoryRepository.save(category);
   }
 
-  getCategories(): Category[] {
-    return this.datasourceService.getCategories();
+  async getCategories(): Promise<Category[]> {
+    return this.categoryRepository.find({
+      relations: ['books'],
+    });
   }
 
-  getCategoriesById(id: number): Category | undefined {
-    return this.datasourceService
-      .getCategories()
-      .find((category) => category.id === id);
+  async getCategoriesById(id: number): Promise<Category> {
+    return this.categoryRepository.findOne({
+      where: { id },
+      relations: ['books'],
+    });
   }
 
-  updateCategory(id: number, updateCategory: Category): Category {
-    const index = this.datasourceService
-      .getCategories()
-      .findIndex((category) => category.id === id);
-
-    this.datasourceService.getCategories()[index] = updateCategory;
-
-    return updateCategory;
+  async updateCategory(
+    id: number,
+    updateCategory: Category,
+  ): Promise<Category> {
+    await this.categoryRepository.update(id, updateCategory);
+    return this.getCategoriesById(id);
   }
 
-  deleteCategory(id: number): Category {
-    const index = this.datasourceService
-      .getCategories()
-      .findIndex((category) => category.id === id);
-
-    const res = this.datasourceService.getCategories().splice(index, 1);
-
-    return res[0];
+  async deleteCategory(id: number): Promise<void> {
+    await this.categoryRepository.delete(id);
   }
 }

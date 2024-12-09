@@ -1,45 +1,43 @@
 import { Injectable } from '@nestjs/common';
-import { DatasourceService } from 'src/datasource/datasource.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { Author } from './entities/author.entity';
+import { CreateAuthorDto } from './dto/create-author.dto';
 
 @Injectable()
 export class AuthrosService {
-  constructor(private readonly datasourceService: DatasourceService) {}
+  constructor(
+    @InjectRepository(Author)
+    private readonly authorRepository: Repository<Author>,
+  ) {}
 
-  create(author: Author): Author {
-    this.datasourceService.getAuthors().push(author);
-    return author;
+  async create(author: CreateAuthorDto): Promise<Author> {
+    const newAuthor = this.authorRepository.create(author);
+    return this.authorRepository.save(newAuthor);
   }
 
-  getById(id: number): Author {
-    const findedAuthor = this.datasourceService
-      .getAuthors()
-      .find((author) => author.id === id);
-
-    return findedAuthor;
+  async getById(id: number): Promise<Author> {
+    return this.authorRepository.findOne({
+      where: { id },
+      relations: ['books'],
+    });
   }
 
-  getAuthors(): Author[] {
-    return this.datasourceService.getAuthors();
+  async getAuthors(): Promise<Author[]> {
+    return this.authorRepository.find({
+      relations: ['books'],
+    });
   }
 
-  updateAuthor(id: number, updatedAuthor: Author): Author {
-    const index = this.datasourceService
-      .getAuthors()
-      .findIndex((author) => author.id === id);
-
-    this.datasourceService.getAuthors()[index] = updatedAuthor;
-
-    return this.datasourceService.getAuthors()[index];
+  async updateAuthor(
+    id: number,
+    updatedAuthor: CreateAuthorDto,
+  ): Promise<Author> {
+    await this.authorRepository.update(id, updatedAuthor);
+    return this.getById(id);
   }
 
-  removeAuthor(id: number): Author {
-    const index = this.datasourceService
-      .getAuthors()
-      .findIndex((author) => author.id === id);
-
-    const res = this.datasourceService.getAuthors().splice(index, 1);
-
-    return res[0];
+  async removeAuthor(id: number): Promise<void> {
+    await this.authorRepository.delete(id);
   }
 }

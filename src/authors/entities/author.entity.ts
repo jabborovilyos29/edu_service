@@ -1,23 +1,31 @@
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 import { Book } from 'src/books/entities/book.entity';
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('authors')
 export class Author {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column({})
+
+  @Column()
   fullname: string;
+
   @Column()
   position: string;
+
   @Column()
   grade: string;
-  @Column()
-  books: Book[];
-  @ManyToMany((type) => Article, (article) => article.authors)
 
+  @ManyToMany(() => Book, (book) => book.authors)
   @JoinTable({
-    name: "article_authors",
-    joinColumn: {name: "author_id"},
-    inverseJoinColumn: {name: "article_id"},
+    name: 'author_books',
+    joinColumn: { name: 'author_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'book_id', referencedColumnName: 'id' },
   })
+  books: Book[];
 }
