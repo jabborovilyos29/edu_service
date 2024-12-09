@@ -27,6 +27,5 @@ export class Author {
     joinColumn: { name: 'author_id', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'book_id', referencedColumnName: 'id' },
   })
-  @Column()
-  affiliations: number[];
+  books: Book[];
 }

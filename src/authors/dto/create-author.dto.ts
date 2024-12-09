@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, IsArray } from 'class-validator';
+import { Book } from 'src/entities/book.entity';
 
 export class CreateAuthorDto {
   @ApiProperty({ example: 'Иван Иванов', description: 'Полное имя автора' })
@@ -22,5 +23,5 @@ export class CreateAuthorDto {
     description: 'Идентификаторы связанных книг',
   })
   @IsArray()
-  affiliations: number[];
+  books: Book[];
 }

@@ -19,7 +19,7 @@ export class Book {
   @Column()
   publicationDate: Date;
 
-  @ManyToMany(() => Author, (author) => author.affiliations)
+  @ManyToMany(() => Author, (author) => author.books)
   authors: Author[];
 
   @ManyToMany(() => Category, (category) => category.books)
